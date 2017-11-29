@@ -14,6 +14,7 @@ import (
 const (
 	BASE_URL = "https://api.weeb.sh/"
 	DEF_CODE = 200
+	wrapperVersion = "1.0.0"
 )
 
 var (
@@ -26,8 +27,46 @@ func Authenticate(t string) error{
 	if err != nil{
 		return err
 	}
-	fmt.Println("Connected to weeb.sh v", d.Version)
+	fmt.Println("Successfully connected to weeb.sh v", d.Version, "using the Weeb.Go v", wrapperVersion, "wrapper")
 	return nil
+}
+
+func getHidden(hidden bool) string{
+	switch hidden {
+		case true:
+			return "true"
+		case false:
+			return "false"
+	}
+	return "false"
+}
+
+func GetTypes(hidden bool) (*data.TypesData, error){
+	res, err := Request(endpoints.TYPES, "?hidden="+getHidden(hidden), DEF_CODE)
+	if err != nil{
+		return nil, err
+	}
+
+	td:= data.TypesData{}
+	err = json.Unmarshal(res, &td)
+	if err !=nil{
+		return nil, err
+	}
+	return &td, nil
+}
+
+func GetTags(hidden bool) (*data.TagsData, error){
+	res, err := Request(endpoints.TAGS,"?hidden="+getHidden(hidden), DEF_CODE)
+	if err != nil {
+		return nil, err
+	}
+
+	td := data.TagsData{}
+	err = json.Unmarshal(res, &td)
+	if err!= nil{
+		return nil, err
+	}
+	return &td, nil
 }
 
 func GetWelcome() (*data.WelcomeData, error) {
@@ -36,7 +75,10 @@ func GetWelcome() (*data.WelcomeData, error) {
 		return nil, err
 	}
 	d := data.WelcomeData{}
-	json.Unmarshal(res, &d)
+	err = json.Unmarshal(res, &d)
+	if err != nil{
+		return nil, err
+	}
 	return &d, nil
 }
 

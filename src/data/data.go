@@ -2,17 +2,17 @@ package data
 
 type WelcomeData struct{
 	Version string
-	Status string
+	Status int
 	Message string
 }
 
 type TypesData struct{
-	status string
+	status int
 	Types []string
 }
 
 type TagsData struct{
-	status string
+	status int
 	Tags []string
 }
 
