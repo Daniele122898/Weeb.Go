@@ -9,12 +9,29 @@ import (
 	"github.com/Daniele122898/weeb.go/src/data"
 	"github.com/Daniele122898/weeb.go/src/endpoints"
 	"encoding/json"
+	"strings"
 )
 
 const (
 	BASE_URL = "https://api.weeb.sh/"
 	DEF_CODE = 200
 	wrapperVersion = "1.0.0"
+)
+
+type FileType int
+type Nsfw int
+
+const(
+	JPG FileType = iota
+	PNG
+	GIF
+	ANY
+)
+
+const(
+	FALSE Nsfw = iota
+	TRUE
+	ONLY
 )
 
 var (
@@ -39,6 +56,32 @@ func getHidden(hidden bool) string{
 			return "false"
 	}
 	return "false"
+}
+
+func getFiletype(ft FileType) string {
+	switch ft {
+	case GIF:
+		return "gif"
+	case JPG:
+		return "jpg"
+	case PNG:
+		return "png"
+	default:
+		return ""
+
+	}
+}
+
+func getNsfw(nswf Nsfw) string{
+	switch nswf {
+	case TRUE:
+		return "true"
+	case ONLY:
+		return "only"
+	default:
+		//false
+		return "false"
+	}
 }
 
 func GetTypes(hidden bool) (*data.TypesData, error){
@@ -67,6 +110,38 @@ func GetTags(hidden bool) (*data.TagsData, error){
 		return nil, err
 	}
 	return &td, nil
+}
+
+func GetRandom(typ string, tags []string,filetype FileType,nsfw Nsfw, hidden bool) (*data.RandomData, error) {
+
+
+
+	query :=""
+	if typ != ""{
+		query+="&type="+typ
+	}
+	if tags != nil && len(tags) != 0{
+		t:= strings.Join(tags, ",")
+		if t != "" {
+			query+= "&tags="+t
+		}
+	}
+	query +="&hidden="+getHidden(hidden)+"&nsfw="+getNsfw(nsfw)
+	if filetype != ANY {
+		query += "&filetype="+getFiletype(filetype)
+	}
+	query = strings.TrimPrefix(query, "&")
+	query = "?"+query
+	res, err := Request(endpoints.RANDOM, query, DEF_CODE)
+	if err != nil{
+		return nil, err
+	}
+	d := data.RandomData{}
+	err = json.Unmarshal(res, &d)
+	if err != nil{
+		return nil, err
+	}
+	return &d, nil
 }
 
 func GetWelcome() (*data.WelcomeData, error) {
@@ -110,7 +185,7 @@ func Request(endpoint, query string, expectedStatus int)([]byte, error){
 	}
 
 	if resp.StatusCode != expectedStatus{
-		return nil, &helpers.UnexpectedStatus{Msg: fmt.Sprintf("Expected status %d; Got %d", expectedStatus, resp.StatusCode)}
+		return nil, &helpers.UnexpectedStatus{Msg: fmt.Sprintf("Expected status %d; Got %d; MSG: %s", expectedStatus, resp.StatusCode, resp.Status)}
 	}
 
 	return buf.Bytes(), nil
