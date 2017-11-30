@@ -113,9 +113,6 @@ func GetTags(hidden bool) (*data.TagsData, error){
 }
 
 func GetRandom(typ string, tags []string,filetype FileType,nsfw Nsfw, hidden bool) (*data.RandomData, error) {
-
-
-
 	query :=""
 	if typ != ""{
 		query+="&type="+typ
