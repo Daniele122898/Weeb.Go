@@ -32,13 +32,13 @@ First you have to authenticate once by passing your token. This has to be done b
 ```go
 //...
 func Auth() error{
-	err := weebgo.Authenticate("YOUR WEEB.SH TOKEN HERE")
-	if err == nil {
-	    //DO ERROR HANDLING IN HERE
-		return err
-	}
-	//No further logic needed...
-	return err
+    err := weebgo.Authenticate("YOUR WEEB.SH TOKEN HERE")
+    if err == nil {
+        //DO ERROR HANDLING IN HERE
+        return err
+    }
+    //No further logic needed...
+    return err
 }
 //...
 ```
@@ -92,36 +92,36 @@ func GetRandomImage(typ string, tags []string,filetype net.FileType,nsfw net.Nsf
 ### TagsData
 ```go
 type TagsData struct{
-	status int
-	Tags []string
+    status int
+    Tags []string
 }
 ```
 
 ### TypesData
 ```go
 type TypesData struct{
-	status int
-	Types []string
+    status int
+    Types []string
 }
 ```
 
 ### RandomData
 ```go
 type RandomData struct{
-	Id string
-	BaseType string
-	FileType string
-	MimeType string
-	Account string
-	Hidden bool
-	Nsfw bool
-	Tags []Tags
-	Url string
+    Id string
+    BaseType string
+    FileType string
+    MimeType string
+    Account string
+    Hidden bool
+    Nsfw bool
+    Tags []Tags
+    Url string
 }
 
 type Tags struct{
-	Name string
-	Hidden bool
-	User string
+    Name string
+    Hidden bool
+    User string
 }
 ```
