@@ -18,28 +18,19 @@ const (
 	wrapperVersion = "1.0.0"
 )
 
-type FileType int
-type Nsfw int
-
-const(
-	JPG FileType = iota
-	PNG
-	GIF
-	ANY
-)
-
-const(
-	FALSE Nsfw = iota
-	TRUE
-	ONLY
-)
-
 var (
 	token string
+	tokenType string
 )
 
-func Authenticate(t string) error{
+func Authenticate(t string, typ data.TokenType) error{
 	token = t
+	switch typ {
+	case data.BEARER:
+		tokenType ="Bearer"
+	case data.WOLKE:
+		tokenType ="Wolke"
+	}
 	d, err := GetWelcome()
 	if err != nil{
 		return err
@@ -58,13 +49,13 @@ func getHidden(hidden bool) string{
 	return "false"
 }
 
-func getFiletype(ft FileType) string {
+func getFiletype(ft data.FileType) string {
 	switch ft {
-	case GIF:
+	case data.GIF:
 		return "gif"
-	case JPG:
+	case data.JPG:
 		return "jpg"
-	case PNG:
+	case data.PNG:
 		return "png"
 	default:
 		return ""
@@ -72,11 +63,11 @@ func getFiletype(ft FileType) string {
 	}
 }
 
-func getNsfw(nswf Nsfw) string{
+func getNsfw(nswf data.Nsfw) string{
 	switch nswf {
-	case TRUE:
+	case data.TRUE:
 		return "true"
-	case ONLY:
+	case data.ONLY:
 		return "only"
 	default:
 		//false
@@ -112,7 +103,7 @@ func GetTags(hidden bool) (*data.TagsData, error){
 	return &td, nil
 }
 
-func GetRandom(typ string, tags []string,filetype FileType,nsfw Nsfw, hidden bool) (*data.RandomData, error) {
+func GetRandom(typ string, tags []string,filetype data.FileType,nsfw data.Nsfw, hidden bool) (*data.RandomData, error) {
 	query :=""
 	if typ != ""{
 		query+="&type="+typ
@@ -124,7 +115,7 @@ func GetRandom(typ string, tags []string,filetype FileType,nsfw Nsfw, hidden boo
 		}
 	}
 	query +="&hidden="+getHidden(hidden)+"&nsfw="+getNsfw(nsfw)
-	if filetype != ANY {
+	if filetype != data.ANY {
 		query += "&filetype="+getFiletype(filetype)
 	}
 	query = strings.TrimPrefix(query, "&")
@@ -160,7 +151,7 @@ func Request(endpoint, query string, expectedStatus int)([]byte, error){
 		url += query
 	}
 	req, err := http.NewRequest("GET", url, nil)
-	req.Header.Set("Authorization", "Bearer "+token)
+	req.Header.Set("Authorization", tokenType+" "+token)
 	if err != nil{
 		return nil, err
 	}

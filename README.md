@@ -33,7 +33,7 @@ First you have to authenticate once by passing your token. This has to be done b
 ```go
 //...
 func Auth() error{
-    err := weebgo.Authenticate("YOUR WEEB.SH TOKEN HERE")
+    err := weebgo.Authenticate("YOUR WEEB.SH TOKEN HERE", data.TOKENTYPE) //data.BEARER or data.WOLKE
     if err == nil {
         //DO ERROR HANDLING IN HERE
         return err
@@ -78,7 +78,7 @@ FileType consists of: `jpg, png, gif, any`. Jpg and jpeg are treated as equal
 NSFW consists of: `false, true, only`
 ```go
 //...
-func GetRandomImage(typ string, tags []string,filetype net.FileType,nsfw net.Nsfw, hidden bool) (*data.RandomData, error){
+func GetRandomImage(typ string, tags []string,filetype data.FileType,nsfw data.Nsfw, hidden bool) (*data.RandomData, error){
     ri, err := weebgo.GetRandomImage(typ, tags, filetype, nsfw, hidden)
     if err != nil{
         //error handling
