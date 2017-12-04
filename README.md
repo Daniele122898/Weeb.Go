@@ -27,6 +27,7 @@ No extra packages needed.
 To use the weeb.sh services you need an authentication token. You can request one at devs@weeb.sh
 
 # Usage
+`hidden` should be set as false by default. These only benefit uploaders and are useless otherwise!
 ### Authentication
 First you have to authenticate once by passing your token. This has to be done before any further usage can occur and only has to be done once.
 ```go
