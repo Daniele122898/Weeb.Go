@@ -15,7 +15,7 @@ import (
 const (
 	BASE_URL = "https://api.weeb.sh/"
 	DEF_CODE = 200
-	wrapperVersion = "1.0.0"
+	wrapperVersion = "1.1.0"
 )
 
 var (
